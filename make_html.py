@@ -44,7 +44,7 @@ class HTMLMaker(object):
                 text = movie.findtext(metadata_element, default='unknown')
                 text = text.split('x')
                 if len(text) == 2:
-                    resolution = float(text[0])
+                    resolution = float(text[0]*text[1])
                 else:
                     raise ValueError
                 sortedmovies.append((resolution, movie.findtext('title', default='unknown'), movie))
@@ -109,10 +109,6 @@ class HTMLMaker(object):
         return xmltree
             
     def write_html_body(self, file, xmltree, direction, current_sort_element):
-        file.write('\t<body>\n')
-        file.write('\t\t<header>\n')
-        file.write('\t\t\t<h1>Movie List</h1>\n')
-        file.write('\t\t</header>\n\n')
         file.write('\t\t<main role="main">\n')
         file.write('\t\t\t<article>\n')
         file.write('\t\t\t\t<table>\n')
@@ -121,8 +117,8 @@ class HTMLMaker(object):
         for element in self.metadata_elements:
             if element == current_sort_element:
                 file.write('\t\t\t\t\t\t\t<th><a href="sorted_by_'+ element + '_' + ('up' if direction == 'down' else
-                           'down') + '.html">' + element.replace('_', ' ') + ('&nbsp;&nbsp;&#9650;' if direction =='up'
-                           else '&nbsp;&nbsp;&#9660;') + '</a></th>\n')
+                           'down') + '.html">' + element.replace('_', ' ') + ('&nbsp;&#9650;' if direction =='up'
+                           else '&nbsp;&#9660;') + '</a></th>\n')
             else:
                 file.write('\t\t\t\t\t\t\t<th><a href="sorted_by_'+ element + '_up' + '.html">' +
                            element.replace('_', ' ') + '</a></th>\n')
@@ -149,6 +145,10 @@ class HTMLMaker(object):
         file.write('\t\t<link rel="stylesheet" href="movielist.css" type="text/css">\n')
         file.write('\t\t<title>' + title + '</title>\n')
         file.write('\t</head>\n\n')
+        file.write('\t<body>\n')
+        file.write('\t\t<header>\n')
+        file.write('\t\t\t<h1>' + title + '</h1>\n')
+        file.write('\t\t</header>\n\n')
         
     def write_html_footer(self, file):
         file.write('\t\t<footer>\n')
