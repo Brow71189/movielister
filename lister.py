@@ -94,10 +94,12 @@ class Movielister(object):
                 self.database_tree.getroot().append(self.create_movie_node(moviename))
             else:
                 now_last_updated = time.strftime('%Y_%m_%d_%H_%M', time.localtime(os.path.getmtime(moviename)))
-                last_updated = database_movie_list[counter].get('date_modified')
+                last_updated = database_movie_list[counter].find('date_modified')
+#		print(now_last_updated)
+#		print(last_updated.text)
                 if self.always_update_all or (last_updated is not None and now_last_updated > last_updated.text):
                     print('Updating entry for ' + moviename)
-                    self.update_movie_node(database_movie_list[counter])
+                    self.update_movie_node(database_movie_list[counter], moviename)
         
         self.database_tree.getroot().set('last_updated', time.strftime('%Y_%m_%d_%H_%M'))
         self.database_tree.getroot().set('metadata_elements', str(self.metadata_elements))
@@ -114,11 +116,11 @@ class Movielister(object):
         
         return movie_node
         
-    def update_movie_node(self, movie_node):
-        metadata_dict = self.get_movie_metadata(movie_node.get('filename'))
+    def update_movie_node(self, movie_node, filename):
+        metadata_dict = self.get_movie_metadata(filename)
         
         for key, value in metadata_dict.items():
-            movie_property = movie_node.find('key')
+            movie_property = movie_node.find(key)
             if key in self.metadata_elements and movie_property is not None:
                 movie_property.text = str(value)
             elif movie_property is not None:
@@ -193,7 +195,7 @@ class Movielister(object):
             print('Could not extract video codec info from ' + filename + '. Reason: ' + str(detail))
             
         try:
-            ffmpeg_metadata['resolution'] = video_stream['width'] + 'x' + video_stream['height']
+            ffmpeg_metadata['resolution'] = str(video_stream['width']) + 'x' + str(video_stream['height'])
         except Exception as detail:
             print('Could not extract video resolution from ' + filename + '. Reason: ' + str(detail))
             
