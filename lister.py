@@ -95,7 +95,7 @@ class Movielister(object):
             else:
                 now_last_updated = time.strftime('%Y_%m_%d_%H_%M', time.localtime(os.path.getmtime(moviename)))
                 last_updated = database_movie_list[counter].get('date_modified')
-                if self.always_udate_all or (last_updated is not None and now_last_updated > last_updated.text):
+                if self.always_update_all or (last_updated is not None and now_last_updated > last_updated.text):
                     print('Updating entry for ' + moviename)
                     self.update_movie_node(database_movie_list[counter])
         
