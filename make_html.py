@@ -44,7 +44,7 @@ class HTMLMaker(object):
                 text = movie.findtext(metadata_element, default='unknown')
                 text = text.split('x')
                 if len(text) == 2:
-                    resolution = float(text[0]*text[1])
+                    resolution = float(text[0])*float(text[1])
                 else:
                     raise ValueError
                 sortedmovies.append((resolution, movie.findtext('title', default='unknown'), movie))
