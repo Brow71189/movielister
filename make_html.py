@@ -121,8 +121,8 @@ class HTMLMaker(object):
         for element in self.metadata_elements:
             if element == current_sort_element:
                 file.write('\t\t\t\t\t\t\t<th><a href="sorted_by_'+ element + '_' + ('up' if direction == 'down' else
-                           'down') + '.html">' + element.replace('_', ' ') + ('  &#9650;' if direction =='up' else
-                           '  &#9660;') + '</a></th>\n')
+                           'down') + '.html">' + element.replace('_', ' ') + ('&nbsp;&nbsp;&#9650;' if direction =='up'
+                           else '&nbsp;&nbsp;&#9660;') + '</a></th>\n')
             else:
                 file.write('\t\t\t\t\t\t\t<th><a href="sorted_by_'+ element + '_up' + '.html">' +
                            element.replace('_', ' ') + '</a></th>\n')
