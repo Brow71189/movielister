@@ -125,6 +125,10 @@ class Movielister(object):
                 movie_property.text = str(value)
             elif movie_property is not None:
                 movie_node.remove(movie_property)
+            elif key in self.metadata_elements:
+                movie_property = ElementTree.Element(key)
+                movie_property.text = str(value)
+                movie_node.append(movie_property)
     
     def get_movielist(self, movie_path=None, current_recursion_depth=0):
         self.movie_path = os.path.normpath(self.movie_path)

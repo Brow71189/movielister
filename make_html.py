@@ -25,7 +25,7 @@ class HTMLMaker(object):
         self.metadata_elements = ast.literal_eval(self.Movielister.database_tree.getroot().get('metadata_elements'))
         self.generate_html()
         
-    def sort_tree_by_metadata_element(self, xmltree, metadata_element):
+    def sort_tree_by_metadata_element(self, xmltree, metadata_element, reverse=False):
         xmltree = copy.deepcopy(xmltree)
         movies = xmltree.getroot()
         
@@ -56,7 +56,7 @@ class HTMLMaker(object):
             sortedmovies.append((movie.findtext(metadata_element, default='unknown'),
                                  movie.findtext('title', default='unknown'), movie))
             
-        sortedmovies.sort()#key=lambda movie: movie[0])
+        sortedmovies.sort(reverse=reverse)#key=lambda movie: movie[0])
         sortedmovies2 = []
         for movie in sortedmovies:
             sortedmovies2.append(movie[2])        
@@ -70,19 +70,25 @@ class HTMLMaker(object):
             self.Movielister.read_config()
             self.Movielister.load_database()
             self.metadata_elements = ast.literal_eval(self.Movielister.database_tree.getroot().get('metadata_elements'))
-        if not os.path.exists('htmls'):
-            os.makedirs('htmls')
-        
+            
         htmls_path = (os.path.normpath(self.Movielister.htmls_path) if self.Movielister.htmls_path is not None
                                                                     else 'htmls')
+        if not os.path.exists(htmls_path):
+            os.makedirs(htmls_path)
+            
         print('Saving htmls in: ' + htmls_path)
         for element in self.metadata_elements:
-            xmltree = self.sort_tree_by_metadata_element(self.Movielister.database_tree, element)
-            with open(os.path.join(htmls_path, 'sorted_by_' + element + '.html'), mode='w') as htmlfile:
-                xmltree = self.make_filesizes_pretty(xmltree)
-                self.write_html_header(htmlfile)
-                self.write_html_body(htmlfile, xmltree)
-                self.write_html_footer(htmlfile)
+            for direction in ['up', 'down']:
+                xmltree = self.sort_tree_by_metadata_element(self.Movielister.database_tree, element,
+                                                             reverse=(direction=='down'))
+                with open(os.path.join(htmls_path, 'sorted_by_' + element + '_' + direction + '.html'),
+                          mode='w') as htmlfile:
+                    xmltree = self.make_filesizes_pretty(xmltree)
+                    self.write_html_header(htmlfile, title='Movie List (last update: ' +
+                                           self.Movielister.database_tree.getroot().get('last_updated',
+                                           default='unknown') + ')')
+                    self.write_html_body(htmlfile, xmltree, direction, element)
+                    self.write_html_footer(htmlfile)
     
     def make_filesizes_pretty(self, xmltree):
         suffixes = ['B', 'KB', 'MB', 'GB', 'TB']
@@ -97,12 +103,12 @@ class HTMLMaker(object):
                 while size > 1024:
                     counter +=1
                     size /= 1024
-                element.find('file_size').text = (str(round(size)) if counter < 3 else
+                element.find('file_size').text = (str(int(round(size))) if counter < 3 else
                                                   str(round(size, 2))) + ' ' + suffixes[counter]
                 
         return xmltree
             
-    def write_html_body(self, file, xmltree):
+    def write_html_body(self, file, xmltree, direction, current_sort_element):
         file.write('\t<body>\n')
         file.write('\t\t<header>\n')
         file.write('\t\t\t<h1>Movie List</h1>\n')
@@ -113,8 +119,13 @@ class HTMLMaker(object):
         file.write('\t\t\t\t\t<thead>\n')
         file.write('\t\t\t\t\t\t<tr>\n')
         for element in self.metadata_elements:
-            file.write('\t\t\t\t\t\t\t<th><a href="sorted_by_'+ element + '.html">' + element.replace('_', ' ')
-                       + '</a></th>\n')
+            if element == current_sort_element:
+                file.write('\t\t\t\t\t\t\t<th><a href="sorted_by_'+ element + '_' + ('up' if direction == 'down' else
+                           'down') + '.html">' + element.replace('_', ' ') + ('  &#9650;' if direction =='up' else
+                           '  &#9660;') + '</a></th>\n')
+            else:
+                file.write('\t\t\t\t\t\t\t<th><a href="sorted_by_'+ element + '_up' + '.html">' +
+                           element.replace('_', ' ') + '</a></th>\n')
         file.write('\t\t\t\t\t\t</tr>\n')
         file.write('\t\t\t\t\t</thead>\n')
         
