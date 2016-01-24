@@ -12,7 +12,14 @@ import subprocess
 from xml.etree import ElementTree
 import ast
 import json
-
+try:
+    import pwd
+except ImportError:
+    __has_pwd = False
+else:
+    __has_pwd = True
+    
+    
 class Movielister(object):
 
     def __init__(self):
@@ -29,7 +36,7 @@ class Movielister(object):
         self.ffprobe_path = 'avprobe'
         self.ffprobe_options = '-of json -show_format -show_streams -loglevel quiet'
         self.metadata_elements = ['title', 'duration_minutes', 'resolution', 'language', 'date_on_tv', 'channel',
-                                  'date_modified', 'file_size', 'video_codec', 'extension']
+                                  'date_modified', 'file_size', 'video_codec', 'extension', 'user']
         self.htmls_path = None
 
     def read_config(self):
@@ -150,11 +157,33 @@ class Movielister(object):
         movie_metadata = {}
         movie_metadata['file_size'] =  os.path.getsize(filename)
         movie_metadata['date_modified'] =  time.strftime('%Y_%m_%d_%H_%M', time.localtime(os.path.getmtime(filename)))
+        movie_metadata.update(self.analyze_user(filename))
         movie_metadata.update(self.analyze_ffmpeg(filename))
         movie_metadata.update(self.analyze_filename(filename))
         
         return movie_metadata
     
+    def analyze_user(self, filename):
+        user_metadata = {}
+        try:
+            st = os.stat(filename)
+            uid = st.st_uid
+        except Exception as detail:
+            print('Could not get user info for ' + filename + '. Reason: ' + str(detail))
+            return user_metadata
+            
+        if __has_pwd:
+            try:
+                uname = pwd.getpwuid(uid).pw_name
+                user_metadata['user'] = uname
+            except Exception as detail:
+                print('Could not get user name for uid for ' + filename + '. Reason: ' + str(detail))
+                user_metadata['user'] = str(uid)
+        else:
+            user_metadata['user'] = str(uid)
+        
+        return user_metadata           
+
     def analyze_ffmpeg(self, filename):
         self.ffprobe_path = os.path.normpath(self.ffprobe_path)
         ffmpeg_metadata = {}
