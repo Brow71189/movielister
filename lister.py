@@ -12,16 +12,17 @@ import subprocess
 from xml.etree import ElementTree
 import ast
 import json
+
+_has_pwd = False
 try:
     import pwd
 except ImportError:
-    __has_pwd = False
+    pass
 else:
-    __has_pwd = True
+    _has_pwd = True
     
     
 class Movielister(object):
-
     def __init__(self):
         self.supported_types = ['.avi', '.mpg', '.wmv', '.mov', '.mkv']
         self.list_recursive = True
@@ -172,7 +173,7 @@ class Movielister(object):
             print('Could not get user info for ' + filename + '. Reason: ' + str(detail))
             return user_metadata
             
-        if __has_pwd:
+        if _has_pwd:
             try:
                 uname = pwd.getpwuid(uid).pw_name
                 user_metadata['user'] = uname
