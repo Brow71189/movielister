@@ -147,7 +147,7 @@ class Movielister(object):
         
         for item in dirlist:
             item = os.path.join(movie_path, item)
-            if os.path.isfile(item) and os.path.splitext(item)[1] in self.supported_types:
+            if os.path.isfile(item) and os.path.splitext(item)[1].lower() in self.supported_types:
                 self.movie_list.append(item)
             elif os.path.isdir(item) and self.list_recursive and (current_recursion_depth < 
                                                                   self.max_recursion_depth or
@@ -280,12 +280,12 @@ class Movielister(object):
                 print('Could not extract date, tv channel and language from title of ' + str(filename) + '. Reason: ' + 
                       str(detail))
                 if filename_metadata.get('title') is None:
-                    filename_metadata['title'] = filename
+                    filename_metadata['title'] = filename.replace('_', ' ')
         else:
             print('Could not extract date, tv channel and language from title of ' + filename + '.')
-            filename_metadata['title'] = filename
+            filename_metadata['title'] = filename.replace('_', ' ')
         
-        filename_metadata['extension'] = extension    
+        filename_metadata['extension'] = extension.lower()
         return filename_metadata
     
     def main(self):
