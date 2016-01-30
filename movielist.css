@@ -65,12 +65,13 @@ tbody {
 }
 
 tr:nth-child(even) {
-	background-color: lightgray;
+	background-color: darkgray;
 	color: white;
 }
 
 a:link, a:visited {
 	text-decoration-line: none;
+	text-decoration: none; color: inherit;
 }
 
 a:hover {

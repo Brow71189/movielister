@@ -130,7 +130,7 @@ class HTMLMaker(object):
             file.write('\t\t\t\t\t\t<tr>\n')
             for element in self.metadata_elements:
                 if element == 'title':
-                    file.write('\t\t\t\t\t\t\t<td><a target="_blank" href="https://www.google.at/?#q=' +
+                    file.write('\t\t\t\t\t\t\t<td><a target="_blank" href="https://www.google.com/?#q=' +
                                movie.findtext(element, default='unknown').replace(' ', '+') + '">' +
                                movie.findtext(element, default='unknown') + '</a></td>\n')
                 else:
