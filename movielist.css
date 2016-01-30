@@ -49,15 +49,15 @@ article {
 table, th, td {
 	text-align: left;
 	padding: 8px;
-      font-size: larger;
-      font-weight: bolder;
-      text-decoration: none; color: #3c3c3c;
 }
 
 th {
 	padding-bottom: 25px;
 	font-variant: small-caps;
 	vertical-align: bottom;
+	font-size: larger;
+    font-weight: bolder;
+    text-decoration: none; color: #3c3c3c;
 }
 
 tbody {
@@ -65,7 +65,7 @@ tbody {
 }
 
 tr:nth-child(even) {
-	background-color: gray;
+	background-color: lightgray;
 	color: white;
 }
 
