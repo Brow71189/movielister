@@ -129,7 +129,12 @@ class HTMLMaker(object):
         for movie in xmltree.getroot().findall('movie'):
             file.write('\t\t\t\t\t\t<tr>\n')
             for element in self.metadata_elements:
-                file.write('\t\t\t\t\t\t\t<td>' + movie.findtext(element, default='unknown') + '</td>\n')
+                if element == 'title':
+                    file.write('\t\t\t\t\t\t\t<td><a href="https://www.google.at/?#q=' +
+                               movie.findtext(element, default='unknown').replace(' ', '+') + '">' +
+                               movie.findtext(element, default='unknown') + '</a></td>\n')
+                else:
+                    file.write('\t\t\t\t\t\t\t<td>' + movie.findtext(element, default='unknown') + '</td>\n')
             file.write('\t\t\t\t\t\t</tr>\n')
         file.write('\t\t\t\t\t</tbody>\n')
             

@@ -49,6 +49,9 @@ article {
 table, th, td {
 	text-align: left;
 	padding: 8px;
+      font-size: larger;
+      font-weight: bolder;
+      text-decoration: none; color: #3c3c3c;
 }
 
 th {
@@ -62,14 +65,11 @@ tbody {
 }
 
 tr:nth-child(even) {
-	background-color: darkgray;
+	background-color: gray;
 	color: white;
 }
 
 a:link, a:visited {
-	font-size: larger;
-	font-weight: bolder;
-	text-decoration: none; color: #3c3c3c;
 	text-decoration-line: none;
 }
 
