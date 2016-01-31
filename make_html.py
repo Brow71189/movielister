@@ -188,7 +188,10 @@ class HTMLMaker(object):
                           mode='w') as htmlfile:
 #                    xmltree = self.make_filesizes_pretty(xmltree)
                     if direction == 'down':
-                        xmltree.getroot()[:] = xmltree.getroot().reverse()
+#                        pass
+                        root = xmltree.getroot()[:]
+                        root.reverse()
+                        xmltree.getroot()[:] = root
                     self.write_html_header(htmlfile, title='Movie List (last update: ' +
                                            self.Movielister.database_tree.getroot().get('last_updated',
                                            default='unknown') + ')')
