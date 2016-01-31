@@ -196,7 +196,7 @@ class Movielister(object):
             args_list.extend(self.ffprobe_options.split())
             args_list.append(filename)
             ffmpeg_out = subprocess.check_output(args_list)
-            ffmpeg_out = json.loads(ffmpeg_out)
+            ffmpeg_out = json.loads(ffmpeg_out.decode(errors='ignore'))
         except Exception as detail:
             print('Could not get ffmpeg metadata for ' + filename + '. Reason: ' + str(detail))
             return ffmpeg_metadata

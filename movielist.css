@@ -56,8 +56,8 @@ th {
 	font-variant: small-caps;
 	vertical-align: bottom;
 	font-size: larger;
-    font-weight: bolder;
-    text-decoration: none; color: #3c3c3c;
+    	font-weight: bolder;
+    	text-decoration: none; color: #3c3c3c;
 }
 
 tbody {
@@ -72,10 +72,13 @@ tr:nth-child(even) {
 a:link, a:visited {
 	text-decoration-line: none;
 	text-decoration: none; color: inherit;
+	font-size: inherit;
+	font-weight: inherit;
 }
 
 a:hover {
 	text-decoration: none; color: lightgray;
+	
 }
 
 aside {
