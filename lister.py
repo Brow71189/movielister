@@ -271,6 +271,7 @@ class Movielister(object):
             try:
                 filename = filename.rsplit('_', 6)
                 filename_metadata['title'] = filename[0].replace('_', ' ')
+                filename_metadata['title'].replace('Top Tipp', '')
                 filename_metadata['channel'] = filename[3]
                 filename_metadata['language'] = filename[6].split('.')[0]
                 date_on_tv = filename[1].split('.')

@@ -180,13 +180,15 @@ class HTMLMaker(object):
             os.makedirs(htmls_path)
             
         print('Saving htmls in: ' + htmls_path)
-        for element in self.metadata_elements:
+        for element in self.metadata_elements:            
+            xmltree = self.sort_tree_by_metadata_element(self.Movielister.database_tree, element)
+            xmltree = self.make_filesizes_pretty(xmltree)
             for direction in ['up', 'down']:
-                xmltree = self.sort_tree_by_metadata_element(self.Movielister.database_tree, element,
-                                                             reverse=(direction=='down'))
                 with open(os.path.join(htmls_path, 'sorted_by_' + element + '_' + direction + '.html'),
                           mode='w') as htmlfile:
-                    xmltree = self.make_filesizes_pretty(xmltree)
+#                    xmltree = self.make_filesizes_pretty(xmltree)
+                    if direction == 'down':
+                        xmltree.getroot()[:] = xmltree.getroot().reverse()
                     self.write_html_header(htmlfile, title='Movie List (last update: ' +
                                            self.Movielister.database_tree.getroot().get('last_updated',
                                            default='unknown') + ')')
